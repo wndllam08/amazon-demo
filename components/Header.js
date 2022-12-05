@@ -5,14 +5,23 @@ import {
     MagnifyingGlassIcon,
     ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
+import { selectItems } from '../slices/basketSlice';
 
 const Header = () => {
+    const { data: session } = useSession();
+    const router = useRouter();
+    const items = useSelector(selectItems);
+
   return (
     <header>
+        
         {/* TopNav */}
         <div className='flex items-center bg-amazon_blue pl-5 flex-grow py-2 font-poppins'>
             <div className='mt-2 flex items-center flex-grow sm:flex-grow-0 mr-3'>
-                <Image 
+                <Image onClick={() => router.push("/")}
                 src="https://links.papareact.com/f90"
                 width={150}
                 height={50}
@@ -28,17 +37,19 @@ const Header = () => {
 
             {/* Right */}
             <div className='text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap'>
-                <div className="link">
-                    <p>Hello Wendell M</p>
+                <div onClick={!session ? signIn : signOut} className="link">
+                    <p>
+                    {session ? `Hello ${session.user.name}`: "Sign In"}
+                    </p>
                     <p className="font-extrabold md:text-sm">Account & Lists</p>
                 </div>
                 <div className="link">
                     <p>Returns</p>
                     <p className="font-extrabold md:text-sm">& Orders</p>
                 </div>
-                <div className="relative link flex items-center">
+                <div onClick={() => router.push("/checkout")} className="relative link flex items-center">
                     <span className="absolute top-0 right-0 md:right-12 h-4 w-4 bg-yellow-400 rounded-full text-center text-black font-bold">
-                        0
+                        {items.length}
                     </span>
                     <ShoppingCartIcon className='h-10'/>
                     <p className="hidden md:inline font-extrabold md:text-sm mt-2">Basket</p>
@@ -47,7 +58,7 @@ const Header = () => {
         </div>
 
         {/* BottomNav */}
-        <div className='flex items-center space-x-3 p-2 pl-6 bg-amazon_blue-light text-white text-sm md:text-base'> 
+        <div className='flex items-center space-x-3 p-2 pl-2 bg-amazon_blue-light text-white text-sm md:text-base md:pl-4'> 
             <p className='link flex items-center'>
                 <Bars3Icon className='h-6 mr-1 font-semibold'/>
                 All

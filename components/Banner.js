@@ -1,6 +1,7 @@
 import React from 'react'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
+import Image from 'next/image';
 
 const Banner = () => {
   return (
@@ -17,12 +18,12 @@ const Banner = () => {
         interval={3000}
         >
             <div>
-                <img loading='lazy' src="https://links.papareact.com/6ff" alt="amazonAds" />
+                <Image src="https://links.papareact.com/6ff" alt="amazonAds" width={414} height={165} className='object-contain'/>
             </div>
 
 
             <div>
-                <img loading='lazy' src="https://links.papareact.com/7ma" alt="amazonAds" />
+                <Image src="https://links.papareact.com/7ma" alt="amazonAds" width={414} height={165} className='object-contain'/>
             </div>
         </Carousel>
     </div>

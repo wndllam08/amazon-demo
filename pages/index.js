@@ -3,11 +3,10 @@ import { Header,Banner,ProductFeed } from '../components';
 
 export default function Home( {products} ) {
   return (
-  
     <div className="scroll-smooth bg-gray-100">
     
       <Head>
-        <title>Amazon Clone</title>
+        <title>Amazon Demo Clone</title>
       </Head>
         {/* HeadNav */}
       <Header/>
@@ -19,7 +18,6 @@ export default function Home( {products} ) {
         {/* ProductFeed */}
         <ProductFeed products={products}/>
 
-        {console.log({products})}
       </main>
    
     </div>
