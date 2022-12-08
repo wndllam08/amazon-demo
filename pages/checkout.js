@@ -1,16 +1,39 @@
-import Image from 'next/image'
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { CheckoutProduct, Header } from '../components'
-import { selectItems, selectTotal } from '../slices/basketSlice'
+import Image from 'next/image';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { CheckoutProduct, Header } from '../components';
+import { selectItems, selectTotal } from '../slices/basketSlice';
 import { NumericFormat } from 'react-number-format';
-import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react';
+import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
+const stripePromise = loadStripe(process.env.stripe_public_key);
 
 const Checkout = () => {
   const items = useSelector(selectItems);
   const total = useSelector(selectTotal);
   const { data: session } = useSession();
-console.log(session);
+
+  const createCheckoutSession = async () => {
+    const stripe = await stripePromise;
+
+    // Call the backend to create a checkout session
+    const checkoutSession = await axios.post('/api/create-checkout-session', 
+    {
+      items: items,
+      email: session.user.email
+    });
+
+    //Redirect user/customer to Stripe Checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: checkoutSession.data.id
+    })
+
+    if(result.error) alert(result.error.message);
+    
+    
+  };
+
   return (
     <div className='bg-gray-100'>
         <Header />
@@ -57,12 +80,19 @@ console.log(session);
                     </span>
                   </h2>
                   <button 
+                    role="link"
+                    onClick={createCheckoutSession}
                     disabled={!session}
                     className={`button mt-2 ${
                       !session && 
                       'from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed pointer-events-none'} `}>
                       {!session ? 'Sign in to Checkout' : 'Proceed to checkout'}
                   </button>
+                  <p className='font-poppins text-xs text-gray-500'>This is a DEMO! use this card details for Checkout<br/> 
+                  Card#: 4242 4242 4242 4242 <br/> 
+                  Exp: 04/24 <br />
+                  CVC: 4242
+                  </p>
                 </>
               )}
             </div>
