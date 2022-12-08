@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { CheckoutProduct, Header } from '../components';
 import { selectItems, selectTotal } from '../slices/basketSlice';
 import { NumericFormat } from 'react-number-format';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 const stripePromise = loadStripe(process.env.stripe_public_key);
@@ -102,3 +102,12 @@ const Checkout = () => {
 }
 
 export default Checkout
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  return{
+      props: {
+          session,
+      },
+  };
+} 

@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { Header,Banner,ProductFeed } from '../components';
 
@@ -25,7 +26,9 @@ export default function Home( {products} ) {
 }
 
 // Needed when doing server side rendering
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
   const products = await fetch("https://fakestoreapi.com/products").then(
     (res) => res.json()
     ); 
@@ -33,6 +36,7 @@ export async function getServerSideProps() {
   return{ 
     props: {
       products,
+      session,
     },
   };
 }   
